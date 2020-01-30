@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
- class tree_height {
+ class tree_height1 {
     class FastScanner {
 		StringTokenizer tok = new StringTokenizer("");
 		BufferedReader in;
@@ -34,29 +34,41 @@ import java.io.*;
 
 		int computeHeight() {
            int maxHeight = 0;
-           int[] heights = new int[parent.length];
-           for(int vertex=0; vertex < n; vertex++){
-        	   if(heights[vertex] != 0)
-        		   continue;
-        	   int height = 0;
-        	   for(int i=vertex; i!= -1; i=parent[i]){
-        		   if(heights[i] != 0){
-        			   height += heights[i];
-        			   break;
-        		   }
-        		   height++;
-        	   }
-        	   maxHeight = Math.max(height, maxHeight);
-        	   for(int i = vertex; i != -1; i = parent[i]){
-        		   if(heights[i] != 0){
-        			   break;
-        		   }
-        		   heights[i] = height--;
-        	   }
+           Map<Integer,ArrayList<Integer>> nodes = new HashMap<>();
+           int root = -23456,vertex=0;
+           
+           for(; vertex<parent.length;vertex++){  
+	            if(parent[vertex] == -1)
+	            	root = vertex;
+	            else if(nodes.containsKey(parent[vertex])){
+	        		nodes.get(parent[vertex]).add(vertex);
+	        	   }
+	        	else
+	        		nodes.put(parent[vertex], new ArrayList<Integer>(Arrays.asList(vertex)));
            }
-           return maxHeight;
+           Queue q = new LinkedList<Integer>();
+           q.add(root);
+           while(true){
+	        	int nodelength = q.size();
+	        	if(nodelength == 0)
+	        		return maxHeight;
+	        	else{
+	        		while(nodelength>0){
+	        			int currentVertex = (int) q.poll();
+	        			if(currentVertex >=0){
+	        			    ArrayList<Integer> temp = nodes.get(currentVertex);
+	        			    if(temp != null){
+		        				for(int j=0; j < temp.size();j++)
+		        					q.add(temp.get(j));
+	        			    }
+	        			}
+	        			nodelength--;
+	        		}
+	        		maxHeight++;
+	        	}	   
+           }
+           
 		}
-		
 	}
 	
 	
@@ -64,7 +76,7 @@ import java.io.*;
             new Thread(null, new Runnable() {
                     public void run() {
                         try {
-                            new tree_height().run();
+                            new tree_height1().run();
                         } catch (IOException e) {
                         }
                     }

@@ -39,42 +39,23 @@ class Buffer {
 
     public Response Process(Request request) {
         // write your code here
-    	//List<Integer> ModFinishTime = new ArrayList<Integer>(finish_time_);
-    	//Collections.sort(ModFinishTime);
-    	//Deque<Integer> dq = new LinkedList<Integer>(ModFinishTime);
-    	Deque<Integer> dq1 = new LinkedList<Integer>(finish_time_);
-    	List<Integer> removal = new ArrayList<Integer>();
-    	Iterator itr = finish_time_.iterator();
-    	//removal.clear();
-    	while(itr.hasNext()){
-    		int a = (Integer)itr.next();
-    		if( a <= request.arrival_time){
-    			dq1.remove(a);
-    			removal.add(a);
-    		}
-    		
-    		    //finish_time_.remove(a);
+    	while(!finish_time_.isEmpty()){
+    		if(finish_time_.get(0)<= request.arrival_time)
+    			finish_time_.remove(0);
+    		else
+    			break;
     	}
-    	for(int id=0;id<removal.size();id++){
-    		finish_time_.remove(new Integer(removal.get(id)));
-    	}
-    	removal.clear();
-    	if(dq1.size() < size_){
-    		//int starttime = 0;
-    		if(dq1.size()==0){
+    	if (finish_time_.size() == size_)
+            return new Response(true, -1);
+    	else{
+    		if(finish_time_.isEmpty()){
     			finish_time_.add(request.arrival_time+request.process_time);
     			return new Response(false,request.arrival_time);
     		}
-    		else{
-    			finish_time_.add(dq1.getLast()+request.process_time);
-    			return new Response(false,dq1.getLast());
-    		}
-//    		dq.add(request.arrival_time+request.process_time);
-//    		Collections.sort(finish_time_);
-//    		return new Response(false,request.arrival_time+request.process_time);
+    		    int last_element = finish_time_.get(finish_time_.size()-1);
+    			finish_time_.add(last_element+request.process_time);
+    			return new Response(false,last_element);
     	}
-    	else
-    		return new Response(true, -1);
     }
 
     private int size_;
